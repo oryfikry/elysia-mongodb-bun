@@ -1,7 +1,7 @@
 // src/app.js
 import { Elysia } from 'elysia';
 import mongoose from 'mongoose';
-import { userRoutes } from './routes/userRoutes.js';
+import { allRoutes } from "./routes/allRoutes.js";
 import { MONGO_URI } from './config.js';
 
 const app = new Elysia();
@@ -16,7 +16,7 @@ mongoose.connect(MONGO_URI, {
 });
 
 // Register routes and middleware
-app.use(userRoutes);
+app.use(allRoutes);
 
 // Start the server
 app.listen(3000, () => {

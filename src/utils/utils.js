@@ -4,3 +4,7 @@ export const arraysEqual = (arr1, arr2) => {
     const sortedArr2 = arr2.slice().sort();
     return sortedArr1.every((value, index) => value === sortedArr2[index]);
   };
+
+export const hasRequiredRoles = (roles, userRoles) => {
+  return roles.every(role => userRoles.includes(role));
+};
