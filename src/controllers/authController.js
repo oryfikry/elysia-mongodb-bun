@@ -4,58 +4,63 @@ import jwt from "jsonwebtoken";
 import { User } from "../models/userModel.js";
 import { JWT_SECRET } from "../config.js";
 import { ResJson } from "../utils/ResJson.js";
-
+import { sendVerificationEmail } from "../services/emailService.js";
 // Register a new user
 export const register = async (req) => {
   try {
-    const { username, password, email, role } = req.body; // Access parsed JSON body directly
+    const { username, password, email, role } = req.body;
 
+    // Check if user exists
     const existingUser = await User.findOne({ username });
-    if (existingUser) {
-      return {
-        status: 400,
-        body: { message: "Username already exists" },
-      };
-    }
+    if (existingUser) return ResJson("Username already exists", "", 400);
 
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create new user
     const newUser = new User({
       username,
       password: hashedPassword,
       email,
       role,
+      verified: false,
     });
-
     await newUser.save();
-    return {
-      status: 200,
-      body: { message: "User registered successfully" },
-    };
-  } catch (err) {
-    return {
-      status: 500,
-      body: { message: "Internal server error", error: err.message },
-    };
+
+    // Send verification email
+    await sendVerificationEmail(newUser);
+
+    return ResJson(
+      "User registered successfully. Please check your email to verify your account.",
+      "",
+      201
+    );
+  } catch (error) {
+    console.log(error);
+    return ResJson("Error creating user", null, 500);
   }
 };
 
 // Login an existing user
-export const login = async (req, res) => {
+export const login = async (req) => {
   const { username, password } = req.body;
   const user = await User.findOne({ username });
+  if (!user) return ResJson("User not found", "", 404);
 
-  if (!user) return ResJson("Invalid username or password", null, 401);
+  if (!user.verified) {
+    return ResJson("Please verify your email before logging in", "", 403);
+  }
 
-  const validPassword = await bcrypt.compare(password, user.password);
-  if (!validPassword) return ResJson("Invalid username or password", null, 401);
+  const isPasswordCorrect = await bcrypt.compare(password, user.password);
+  if (!isPasswordCorrect) return ResJson("Invalid credentials", "", 400);
 
+  // Generate JWT token
   const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
-    expiresIn: "20h",
+    expiresIn: "1h",
   });
-  
-  return ResJson("Success",{roles: user.role, token: token},200)
-};
 
+  return ResJson("Login successful", { token }, 200);
+};
 // Forgot password - Generate token to reset password
 export const forgotPassword = async (req, res) => {
   const { email } = await req.body;
@@ -95,4 +100,20 @@ export const resetPassword = async (req, res) => {
       data: null,
     };
   }
+};
+
+export const verifyEmail = async (req) => {
+  const { token } = req.params;
+
+  const user = await User.findOne({ verificationToken: token });
+  if (!user) {
+    return ResJson("Invalid or expired token", "", 400);
+  }
+
+  // Mark user as verified
+  user.verified = true;
+  user.verificationToken = undefined;
+  await user.save();
+
+  return ResJson("Email verified successfully", "", 200);
 };

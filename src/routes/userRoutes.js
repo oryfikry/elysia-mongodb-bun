@@ -4,6 +4,7 @@ import {
   login,
   forgotPassword,
   resetPassword,
+  verifyEmail
 } from "../controllers/authController.js";
 import { verifyToken } from "../middlewares/authMiddleware.js";
 import { ResJson } from "../utils/ResJson.js";
@@ -21,7 +22,7 @@ app.post("/login", async (req) => {
   const response = await login(req);
   return response;
 });
-
+app.get('/verify-email/:token', verifyEmail); 
 // Generate password reset token
 app.post("/forgot-password", async (req) => {
   const response = await forgotPassword(req);
