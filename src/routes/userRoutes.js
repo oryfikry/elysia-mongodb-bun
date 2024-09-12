@@ -8,6 +8,7 @@ import {
 } from "../controllers/authController.js";
 import { verifyToken } from "../middlewares/authMiddleware.js";
 import { ResJson } from "../utils/ResJson.js";
+import { getAllUsers } from "../controllers/userController.js";
 
 const app = new Elysia();
 
@@ -45,7 +46,9 @@ app.get("/admin-only", verifyToken(["ADMIN"]), (req) => {
 });
 
 app.get("/", () => {
-  return { status: 200, body: "Hello" };
+  return { status: 200, body: "Server is up 🐦‍🔥" };
 });
+
+app.get("/users", getAllUsers);
 
 export const userRoutes = app;
