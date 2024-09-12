@@ -47,7 +47,7 @@ app.get("/admin-only", verifyToken(["ADMIN"]), (req) => {
 });
 
 app.get("/", () => {
-  return { status: 200, body: "Server is up 🐦‍🔥" };
+  return { status: 200, message: "Server is up 🐦‍🔥" };
 });
 
 app.get("/users", getAllUsers);
