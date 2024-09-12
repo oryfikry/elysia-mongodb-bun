@@ -127,3 +127,31 @@ export const verifyEmail = async (req) => {
 
   return ResJson("Email verified successfully", "", 200);
 };
+
+export const sendVerificationToEmail = async (req) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) return ResJson("Please input email !", null, 400);
+
+    const existingUser = await User.findOne({
+      email,
+    });
+
+    if (!existingUser) {
+      return ResJson("Email Not Found!", null, 404);
+    }
+    if(existingUser.verified){
+      return ResJson("Email has been verified, no need to verify again", null, 200);
+    }
+    await sendVerificationEmail(existingUser);
+    return ResJson(
+      "Verification token has been sent to your email, please check your email.",
+      "",
+      200
+    );
+  } catch (error) {
+    console.log(error);
+    return ResJson("Failed, Cannot send token !", null, 200);
+  }
+};

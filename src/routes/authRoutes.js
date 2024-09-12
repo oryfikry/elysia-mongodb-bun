@@ -4,7 +4,8 @@ import {
   login,
   forgotPassword,
   resetPassword,
-  verifyEmail
+  verifyEmail,
+  sendVerificationToEmail
 } from "../controllers/authController.js";
 import { verifyToken } from "../middlewares/authMiddleware.js";
 import { ResJson } from "../utils/ResJson.js";
@@ -51,4 +52,9 @@ app.get("/", () => {
 
 app.get("/users", getAllUsers);
 
-export const userRoutes = app;
+app.post("/sendVerificationToEmail", async(req)=>{
+  const res = await sendVerificationToEmail(req)
+  return res
+});
+
+export const authRoutes = app;
