@@ -21,36 +21,36 @@ mongoose
 app.use(allRoutes);
 
 // Start the server
-const server = app.listen(3000, () => {
-  console.log("API is running on http://localhost:3000");
+app.listen(3000, () => {
+  console.log("server is running on "+ process.env.APP_URL);
 });
 
 // Gracefully handle SIGTERM (Koyeb sends this to stop the app)
-process.on("SIGTERM", () => {
-  console.log("SIGTERM signal received: closing HTTP server and MongoDB connection");
+process.on("SIGTERM", async () => {
+  console.log("SIGTERM signal received: stopping server and closing MongoDB connection");
 
-  // Close server
-  server.close(() => {
-    console.log("HTTP server closed");
-    
-    // Disconnect from MongoDB
-    mongoose.connection.close(false, () => {
-      console.log("MongoDB connection closed");
-      process.exit(0);
-    });
+  // Stop Elysia server
+  await app.stop();
+  console.log("Elysia server stopped");
+
+  // Disconnect from MongoDB
+  mongoose.connection.close(false, () => {
+    console.log("MongoDB connection closed");
+    process.exit(0);
   });
 });
 
 // Handle SIGINT (for manual stop, e.g., Ctrl+C in local dev)
-process.on("SIGINT", () => {
-  console.log("SIGINT signal received: closing HTTP server and MongoDB connection");
+process.on("SIGINT", async () => {
+  console.log("SIGINT signal received: stopping server and closing MongoDB connection");
 
-  server.close(() => {
-    console.log("HTTP server closed");
+  // Stop Elysia server
+  await app.stop();
+  console.log("Elysia server stopped");
 
-    mongoose.connection.close(false, () => {
-      console.log("MongoDB connection closed");
-      process.exit(0);
-    });
+  // Disconnect from MongoDB
+  mongoose.connection.close(false, () => {
+    console.log("MongoDB connection closed");
+    process.exit(0);
   });
 });
