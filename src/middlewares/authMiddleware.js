@@ -4,9 +4,10 @@ import { CustomError } from '../utils/CustomError.js';
 import { ResJson } from '../utils/ResJson.js';
 import {arraysEqual} from '../utils/utils.js';
 
-export const verifyToken = (roles = [],some=false) => {
+export const verifyToken = (roles = [],some=false,func=null) => {
   return async (req) => {
-    const token = req.headers?.authorization?.split(' ')[1]; // Handle Bearer token
+    const token = req.headers?.authorization?.split(' ')[1]; // Handle Bearer 
+    console.log(req?.headers);
     if (!token) {
       return ResJson('Authorization token is missing','', 401);
     }
@@ -33,7 +34,10 @@ export const verifyToken = (roles = [],some=false) => {
        }
 
       // Continue to the next middleware or route handler
-      return true;
+      if(func){
+        return func(req)
+      }
+      return true
     } catch (err) {
       console.log(err);
       return ResJson('Invalid or expired token','', 401);
