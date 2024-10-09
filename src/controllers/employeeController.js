@@ -7,6 +7,7 @@ export const getAllEmployees = async (req) => {
     const employees = await Employee.find();
     return ResJson("Employees retrieved successfully", employees, 200);
   } catch (error) {
+    console.log(error);
     return ResJson("Error retrieving employees", null, 500);
   }
 };
@@ -19,6 +20,7 @@ export const getEmployeeById = async (req) => {
     }
     return ResJson("Employee retrieved successfully", employee, 200);
   } catch (error) {
+    console.log(error);
     if (error instanceof CustomError) {
       return ResJson(error.message, null, error.status);
     }
