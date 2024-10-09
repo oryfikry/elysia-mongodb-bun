@@ -34,10 +34,7 @@ process.on("SIGTERM", async () => {
   console.log("Elysia server stopped");
 
   // Disconnect from MongoDB
-  mongoose.connection.close(false, () => {
-    console.log("MongoDB connection closed");
-    process.exit(0);
-  });
+  await mongoose.connection.close(false);
 });
 
 // Handle SIGINT (for manual stop, e.g., Ctrl+C in local dev)
@@ -49,8 +46,5 @@ process.on("SIGINT", async () => {
   console.log("Elysia server stopped");
 
   // Disconnect from MongoDB
-  mongoose.connection.close(false, () => {
-    console.log("MongoDB connection closed");
-    process.exit(0);
-  });
+  await mongoose.connection.close(false);
 });
