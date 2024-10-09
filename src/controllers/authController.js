@@ -64,12 +64,14 @@ export const login = async (req) => {
   const isPasswordCorrect = await bcrypt.compare(password, user.password);
   if (!isPasswordCorrect) return ResJson("Invalid credentials", "", 400);
 
+  const expireDuration = process.env.expireDuration ?? 3
   // Generate JWT token
   const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
-    expiresIn: "1h",
+    expiresIn: expireDuration+"h",
   });
 
-  return ResJson("Login successful", { token }, 200);
+  const expireIn = new Date(Date.now() + expireDuration * 60 * 60 * 1000).toISOString();
+  return ResJson("Login successful", { token, role: user.role, expireIn}, 200);
 };
 // Forgot password - Generate token to reset password
 export const forgotPassword = async (req, res) => {
@@ -141,8 +143,12 @@ export const sendVerificationToEmail = async (req) => {
     if (!existingUser) {
       return ResJson("Email Not Found!", null, 404);
     }
-    if(existingUser.verified){
-      return ResJson("Email has been verified, no need to verify again", null, 200);
+    if (existingUser.verified) {
+      return ResJson(
+        "Email has been verified, no need to verify again",
+        null,
+        200
+      );
     }
     await sendVerificationEmail(existingUser);
     return ResJson(
