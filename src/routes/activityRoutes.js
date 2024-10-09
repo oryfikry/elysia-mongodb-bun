@@ -10,12 +10,11 @@ import { verifyToken } from "../middlewares/authMiddleware.js";
 
 const activityRoutes = new Elysia();
 
-if(verifyToken(["ADMIN"],true)){
-  activityRoutes.get('/activities', getAllActivities);
-  activityRoutes.get('/activities/:id', getActivityById);
-  activityRoutes.post('/activities', createActivity);
-  activityRoutes.put('/activities/:id', updateActivity);
-  activityRoutes.delete('/activities/:id', deleteActivity);
-}
+  activityRoutes.get('/activities',verifyToken(["ADMIN"]), getAllActivities);
+  activityRoutes.get('/activities/:id',verifyToken(["ADMIN"]), getActivityById);
+  activityRoutes.post('/activities',verifyToken(["ADMIN"]), createActivity);
+  activityRoutes.put('/activities/:id',verifyToken(["ADMIN"]), updateActivity);
+  activityRoutes.delete('/activities/:id',verifyToken(["ADMIN"]), deleteActivity);
+
 
 export { activityRoutes };

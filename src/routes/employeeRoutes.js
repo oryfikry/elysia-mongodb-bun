@@ -10,12 +10,11 @@ import { verifyToken } from "../middlewares/authMiddleware.js";
 
 const employeeRoutes = new Elysia();
 
-if(verifyToken(["ADMIN"],true)){
-  employeeRoutes.get('/employees', getAllEmployees);
-  employeeRoutes.get('/employees/:id', getEmployeeById);
-  employeeRoutes.post('/employees', createEmployee);
-  employeeRoutes.put('/employees/:id', updateEmployee);
-  employeeRoutes.delete('/employees/:id', deleteEmployee);
-}
+  employeeRoutes.get('/employees',verifyToken(["ADMIN"]), getAllEmployees);
+  employeeRoutes.get('/employees/:id',verifyToken(["ADMIN"]), getEmployeeById);
+  employeeRoutes.post('/employees',verifyToken(["ADMIN"]), createEmployee);
+  employeeRoutes.put('/employees/:id',verifyToken(["ADMIN"]), updateEmployee);
+  employeeRoutes.delete('/employees/:id',verifyToken(["ADMIN"]), deleteEmployee);
+
 
 export { employeeRoutes };
