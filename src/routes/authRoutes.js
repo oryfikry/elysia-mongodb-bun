@@ -49,8 +49,9 @@ app.get("/admin-only", verifyToken(["ADMIN"]), (req) => {
 app.get("/", () => {
   return { status: 200, message: "Server is up 🐦‍🔥" };
 });
-
-app.get("/users", getAllUsers);
+if(verifyToken(["ADMIN"],true)){
+  app.get("/users", getAllUsers);
+}
 
 app.post("/sendVerificationToEmail", async(req)=>{
   const res = await sendVerificationToEmail(req)

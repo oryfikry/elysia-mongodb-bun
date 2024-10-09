@@ -12,10 +12,10 @@ const activityRoutes = new Elysia();
 
 if(verifyToken(["ADMIN"],true)){
   activityRoutes.get('/activities', getAllActivities);
+  activityRoutes.get('/activities/:id', getActivityById);
+  activityRoutes.post('/activities', createActivity);
+  activityRoutes.put('/activities/:id', updateActivity);
+  activityRoutes.delete('/activities/:id', deleteActivity);
 }
-activityRoutes.get('/activities/:id', getActivityById);
-activityRoutes.post('/activities', createActivity);
-activityRoutes.put('/activities/:id', updateActivity);
-activityRoutes.delete('/activities/:id', deleteActivity);
 
 export { activityRoutes };
