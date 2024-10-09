@@ -1,7 +1,7 @@
 # Elysia with Bun runtime
 
 ## Getting Started
--complete the requirement in env file such us app key gmail, url key mongodb
+- Please complete the requirement in env file such us app key gmail, url key mongodb
 
 ## Development
 To start the development server run:
