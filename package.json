@@ -3,7 +3,8 @@
   "version": "1.0.50",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/app.js"
+    "dev": "bun run --watch src/app.js",
+    "prod": "bun run --watch src/app.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
