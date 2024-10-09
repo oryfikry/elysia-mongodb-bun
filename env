@@ -1,0 +1,6 @@
+MONGO_URI='mongodb+srv://xyz'
+JWT_SECRET='your_jwt_secret_keyxyz'
+EMAIL_SENDER='your-email-sender@gmail.com'
+EMAIL_USER='your-email-sender@gmail.com'
+EMAIL_PASS='your email app key'
+APP_URL='http://localhost:3000'
